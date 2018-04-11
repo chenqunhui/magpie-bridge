@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+				http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+				http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd"
+       default-lazy-init="false">
+      
+      <bean id="magpieRegistry" class="com.cqh.magpie.rpc.thrift.spring.RegistryFactory">
+      		<property name="url" value="zookeeper://127.0.0.1:2181"/>
+      		<property name="domainName" value="testMagpie"></property>
+      </bean>
+      
+      <bean  class="com.cqh.magpie.rpc.thrift.config.ConsumerConfig">
+      		<property name="version" value="1.0"/>
+      		<property name="timeout" value="5000"/>
+      		<property name="retry" value="0"/>
+      </bean>
+      
+      <bean id="echoService" class="com.cqh.magpie.rpc.thrift.spring.ConsumerProxyFactory">
+      	   <property name="version" value="1.0"/>
+      	   <property name="serviceName" value="com.cqh.magpie.rpc.thrift.EchoService"/>
+      </bean> 
+      
+       <bean id="demoService" class="com.cqh.magpie.rpc.thrift.spring.ConsumerProxyFactory">
+      	   <property name="version" value="1.0"/>
+      	   <property name="serviceName" value="com.cqh.magpie.rpc.thrift.DemoService"/>
+      </bean> 
+      
+      <bean id="demoServiceImpl" class="com.cqh.magpie.rpc.thrift.DemoServiceImpl"></bean>
+      
+      <bean id="provider" class="com.cqh.magpie.rpc.thrift.spring.ProviderFactory">
+      		<property name="version" value="1.0"/>
+      		<property name="service" ref="demoServiceImpl"/>
+      </bean>
+
+ </beans>

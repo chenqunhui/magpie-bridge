@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<configuration>
+
+    <appender name="console_log" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%-5level] %file:[%line] - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="com.cqh" level="debug"></logger>
+
+    <logger name="org.springframework" level="INFO"></logger>
+
+
+    <root level="debug">
+        <appender-ref ref="console_log"/>
+    </root>
+
+
+</configuration>
