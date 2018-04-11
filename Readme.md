@@ -50,7 +50,7 @@
       		<property name="url" value="zookeeper://127.0.0.1:2181"/>
       		<property name="domainName" value="testMagpie"></property>
       </bean>
-  		<!-- 消费端默认配置，如果消费者bean没有配置下列属性，刚默认使用本配置-->
+  		<!-- 消费端默认配置，如果消费者bean没有配置下列属性，则默认使用本配置-->
       <bean  class="com.cqh.magpie.rpc.thrift.config.ConsumerConfig">
       		<property name="version" value="1.0"/>
       		<property name="timeout" value="5000"/>
