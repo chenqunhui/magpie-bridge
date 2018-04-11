@@ -60,6 +60,8 @@ public class ConsumerProxyFactory implements FactoryBean<Object>,InitializingBea
 	private static ConsumerConfig consumerConfig;
 	private URL subscribeUrl;
 	private LoadBalancer loadBalancer;
+	//注册发现服务，持有url和连接池
+	RegistryInvokerFactory invokerFactory;
 	
 	@Override
 	public Object getObject() throws Exception {
@@ -85,8 +87,8 @@ public class ConsumerProxyFactory implements FactoryBean<Object>,InitializingBea
 		initSubscribeUrl();
 		initRegistry();
 		initLoadBalance();
-		clazz = this.getClass().getClassLoader().loadClass(serviceName+"$Iface");
-		target = Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class<?>[]{clazz}, getInvocationHandler());
+		subscribeService();
+		
 	}
 	private void initRegistry(){
 		try{
@@ -162,8 +164,7 @@ public class ConsumerProxyFactory implements FactoryBean<Object>,InitializingBea
 		} 
 		//thrift连接池Factory类
 		ThriftClientFactory thriftClientFactory = new ThriftClientFactory(clientFactory,null,Constants.DEFAULT_CONNECT_TIMEOUT,subscribeUrl.getParameter(Constants.TIMEOUT_KEY, Constants.DEFAULT_TIMEOUT));
-		//注册发现服务，持有url和连接池
-		RegistryInvokerFactory invokerFactory = new RegistryInvokerFactory(registry,subscribeUrl,thriftClientFactory);
+		invokerFactory = new RegistryInvokerFactory(subscribeUrl,thriftClientFactory);
 		//负载均衡，获取执行对象
 		ThriftConsumerInvoker invoker = new ThriftConsumerInvoker(clazz, invokerFactory, loadBalancer);
 		//熔断
@@ -171,6 +172,18 @@ public class ConsumerProxyFactory implements FactoryBean<Object>,InitializingBea
 		return proxy;
 	}
 
+	//订阅服务
+	private void subscribeService() throws Exception{
+		registry.subscribe(subscribeUrl, invokerFactory);
+		clazz = this.getClass().getClassLoader().loadClass(serviceName+"$Iface");
+		target = Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class<?>[]{clazz}, getInvocationHandler());
+		//优雅停机
+		 Runtime.getRuntime().addShutdownHook(new Thread(){
+			 public void run(){
+				 registry.unsubscribe(subscribeUrl, invokerFactory);;
+			 }
+		 });
+	}
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;

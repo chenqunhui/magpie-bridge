@@ -25,14 +25,14 @@ public class RegistryInvokerFactory implements NotifyListener{
 	private List<URL> cacheUrls = new CopyOnWriteArrayList<URL>();
 	private volatile Map<String,List<URL>> methodUrlsMap;
 	private GenericKeyedObjectPool<String,TServiceClient> pool;
-	private Registry registry;
+	//private Registry registry;
 	private URL subscribeUrl;
 	
-	public RegistryInvokerFactory(Registry registry,URL subscribeUrl,ThriftClientFactory factory){
+	public RegistryInvokerFactory(URL subscribeUrl,ThriftClientFactory factory){
 		this.pool = new  GenericKeyedObjectPool<String,TServiceClient>(factory,makePoolConfig());
-		this.registry = registry;
+		///this.registry = registry;
 		this.subscribeUrl = subscribeUrl;
-		this.registry.subscribe(this.subscribeUrl, this);
+		
 	}
 	
 	@Override

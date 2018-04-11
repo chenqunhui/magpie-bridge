@@ -177,6 +177,12 @@ public class ProviderFactory implements FactoryBean<Object>,InitializingBean,App
 	
 	private void registedService(){
 		 registry.register(providerUrl);
+		 //优雅停机
+		 Runtime.getRuntime().addShutdownHook(new Thread(){
+			 public void run(){
+				 registry.unregister(providerUrl);
+			 }
+		 });
 	}
 
 	class ServerThread extends Thread{
