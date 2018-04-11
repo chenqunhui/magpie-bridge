@@ -26,7 +26,7 @@
   
   二、Demo用例
   
-	1.服务提供者端配置：
+  1.服务提供者端配置：
 	      
 	<!-- 注册中心 provider和consumer都需要 -->
       <bean id="magpieRegistry" class="com.cqh.magpie.rpc.thrift.spring.RegistryFactory">
