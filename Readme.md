@@ -1,17 +1,26 @@
 
 
-							   magpie-bridge  
-					#跨语言RPC中间件  最新版本：0.0.1-SNAPSHOT
+	magpie-bridge  
+	#跨语言RPC中间件  最新版本：0.0.1-SNAPSHOT
 
   一、功能描述
+  
     1.thrift服务自动注册和发现；
+    
     2.负载均衡：目前支持权重随机和轮循；
+    
     3.支持熔断机制；
+    
     4.目前支持:
+    
          (1)版本分组：即conumser只会调用到相同版本的provider;
+         
          (2)方法分组:同一接口，培加新方法时,新旧版本provider同时存在，调用新方法的consumer只会调用到实现了新方法的provider; 
+         
          (3)当前版本不支持thrift接口方法重载；
+         
     5.支持优雅停机；
+    
     6.服务依赖关系存储在注册中心，可供生成服务依赖图；
   
   
@@ -57,7 +66,9 @@
       </bean> 
    
    三、设计参考
+   
     1.registry部分代码取自dubbo，去掉了configurators和routers，并作了少量修改；
+    
     2.RPC实现参考其他中间件；
 
       
