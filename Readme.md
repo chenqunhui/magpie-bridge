@@ -25,9 +25,10 @@
   
   
   二、Demo用例
+  
 	1.服务提供者端配置：
 	      
-		<!-- 注册中心 provider和consumer都需要 -->
+	<!-- 注册中心 provider和consumer都需要 -->
       <bean id="magpieRegistry" class="com.cqh.magpie.rpc.thrift.spring.RegistryFactory">
       		<property name="url" value="zookeeper://127.0.0.1:2181"/>
       		<property name="domainName" value="testMagpie"></property>
@@ -43,7 +44,8 @@
       </bean>
       
    2.消费者端配置：
-   		<!-- 注册中心 provider和consumer都需要 -->
+   
+   	<!-- 注册中心 provider和consumer都需要 -->
       <bean id="magpieRegistry" class="com.cqh.magpie.rpc.thrift.spring.RegistryFactory">
       		<property name="url" value="zookeeper://127.0.0.1:2181"/>
       		<property name="domainName" value="testMagpie"></property>
