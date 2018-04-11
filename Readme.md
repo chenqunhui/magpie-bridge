@@ -1,6 +1,6 @@
 
+magpie-bridge  
 
-	magpie-bridge  
 	#跨语言RPC中间件  最新版本：0.0.1-SNAPSHOT
 
   一、功能描述
