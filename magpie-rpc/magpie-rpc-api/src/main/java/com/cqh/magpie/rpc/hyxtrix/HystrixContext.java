@@ -15,4 +15,17 @@ public class HystrixContext {
      */
     private int errorThresholdPercentage = 50;
     
+    
+    public HystrixContext(Object fallbackObject,int errorThresholdPercentage){
+    	this.fallbackObject = fallbackObject;
+    	this.errorThresholdPercentage = errorThresholdPercentage;
+    }
+    
+	public HystrixContext(Object fallbackObject){
+	    this.fallbackObject = fallbackObject;
+	}
+	
+	public HystrixContext(){
+		
+	}
 }

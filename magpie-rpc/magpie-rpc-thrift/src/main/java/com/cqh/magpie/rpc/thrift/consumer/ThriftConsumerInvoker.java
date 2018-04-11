@@ -13,7 +13,7 @@ import com.cqh.magpie.common.utils.Log;
 import com.cqh.magpie.common.utils.UrlUtils;
 import com.cqh.magpie.rpc.consumer.ConsumerInvoker;
 import com.cqh.magpie.rpc.exception.RpcException;
-import com.cqh.magpie.rpc.loadbalance.LoadBalance;
+import com.cqh.magpie.rpc.loadbalance.LoadBalancer;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,12 +26,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public  class ThriftConsumerInvoker implements ConsumerInvoker{
 
-	private LoadBalance loadBalance;
+	private LoadBalancer loadBalance;
 	private Class<?> clazz;
 	private RegistryInvokerFactory registryInvokerFactory;
 	public ThriftConsumerInvoker(Class<?> clazz,
 			RegistryInvokerFactory registryInvokerFactory,
-			LoadBalance loadBalance){
+			LoadBalancer loadBalance){
 		this.clazz = clazz;
 		this.loadBalance = loadBalance;
 		this.registryInvokerFactory = registryInvokerFactory;

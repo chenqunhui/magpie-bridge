@@ -154,6 +154,7 @@ public class ProviderFactory implements FactoryBean<Object>,InitializingBean,App
 			parameter.put(Constants.METHODS_KEY, methodString);
 		}
 		providerUrl = new URL("thrift",NetUtils.getLocalHost(),port,parameter);
+		log.debug("register url : {}",providerUrl.toFullString());
 	}
 	
 	private void initProviderConfig(){

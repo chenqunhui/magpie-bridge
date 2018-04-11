@@ -22,7 +22,9 @@ import com.cqh.magpie.registry.Registry;
 import com.cqh.magpie.rpc.consumer.ConsumerProxy;
 import com.cqh.magpie.rpc.exception.RpcException;
 import com.cqh.magpie.rpc.hyxtrix.HystrixContext;
-import com.cqh.magpie.rpc.loadbalance.RandomLoadBalance;
+import com.cqh.magpie.rpc.loadbalance.LoadBalancer;
+import com.cqh.magpie.rpc.loadbalance.RandomLoadBalancer;
+import com.cqh.magpie.rpc.loadbalance.RoundRobinLoadBalancer;
 import com.cqh.magpie.rpc.thrift.config.ConsumerConfig;
 import com.cqh.magpie.rpc.thrift.consumer.RegistryInvokerFactory;
 import com.cqh.magpie.rpc.thrift.consumer.ThriftClientFactory;
@@ -47,10 +49,17 @@ public class ConsumerProxyFactory implements FactoryBean<Object>,InitializingBea
 	private Object target;
 	private String version;
 	private int timeout =0;
+	private String serviceLoadBalancer;
+	/**
+     * 服务降级的伪装者类对象
+     */
+    private Object fallbackObject;
+    private int errorThresholdPercentage=50;
 	
 	private static Registry registry;
 	private static ConsumerConfig consumerConfig;
 	private URL subscribeUrl;
+	private LoadBalancer loadBalancer;
 	
 	@Override
 	public Object getObject() throws Exception {
@@ -75,6 +84,7 @@ public class ConsumerProxyFactory implements FactoryBean<Object>,InitializingBea
 		initConsumerConfig();
 		initSubscribeUrl();
 		initRegistry();
+		initLoadBalance();
 		clazz = this.getClass().getClassLoader().loadClass(serviceName+"$Iface");
 		target = Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class<?>[]{clazz}, getInvocationHandler());
 	}
@@ -113,12 +123,24 @@ public class ConsumerProxyFactory implements FactoryBean<Object>,InitializingBea
 	
 	private void initSubscribeUrl(){
 		Map<String,String> parameters = new HashMap<String,String>();
-		parameters.put("interface", serviceName);
-		parameters.put("version",version == null? consumerConfig.getVersion():version);
-		parameters.put("timeout", String.valueOf(timeout == 0 ? consumerConfig.getTimeout() : timeout));
-		parameters.put("category", Constants.CONSUMERS_CATEGORY);
+		parameters.put(Constants.VERSION_KEY, serviceName);
+		parameters.put(Constants.VERSION_KEY,version == null? consumerConfig.getVersion():version);
+		parameters.put(Constants.TIMEOUT_KEY, String.valueOf(timeout == 0 ? consumerConfig.getTimeout() : timeout));
+		parameters.put(Constants.CATEGORY_KEY, Constants.CONSUMERS_CATEGORY);
 		subscribeUrl = new URL("thrift",NetUtils.getLocalHost(),0,parameters);
 		log.debug("init subscribe url : {}",subscribeUrl.toFullString());
+	}
+	
+	private void initLoadBalance(){
+		if(StringUtils.isEmpty(serviceLoadBalancer)){
+			serviceLoadBalancer = consumerConfig.getLoadbalance();
+		}
+		if(RoundRobinLoadBalancer.NAME.equals(serviceLoadBalancer)){
+			loadBalancer = new RoundRobinLoadBalancer();
+		}else{
+			loadBalancer = new RandomLoadBalancer();
+		}
+		
 	}
 
 	@SuppressWarnings("unchecked")
@@ -143,9 +165,9 @@ public class ConsumerProxyFactory implements FactoryBean<Object>,InitializingBea
 		//注册发现服务，持有url和连接池
 		RegistryInvokerFactory invokerFactory = new RegistryInvokerFactory(registry,subscribeUrl,thriftClientFactory);
 		//负载均衡，获取执行对象
-		ThriftConsumerInvoker invoker = new ThriftConsumerInvoker(clazz, invokerFactory, new RandomLoadBalance());
+		ThriftConsumerInvoker invoker = new ThriftConsumerInvoker(clazz, invokerFactory, loadBalancer);
 		//熔断
-		ConsumerProxy proxy = new ConsumerProxy(invoker,new HystrixContext());
+		ConsumerProxy proxy = new ConsumerProxy(invoker,new HystrixContext(fallbackObject,errorThresholdPercentage));
 		return proxy;
 	}
 
@@ -153,4 +175,5 @@ public class ConsumerProxyFactory implements FactoryBean<Object>,InitializingBea
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
 		this.applicationContext = applicationContext;
 	}
+	
 }
