@@ -54,7 +54,7 @@
 		<dependency>
         	<artifactId>libthrift</artifactId>
             <groupId>org.apache.thrift</groupId>
-            <version>0.10.0</version>
+            <version>0.12.0</version>
         </dependency>
         <dependency>
 			<groupId>org.projectlombok</groupId>
