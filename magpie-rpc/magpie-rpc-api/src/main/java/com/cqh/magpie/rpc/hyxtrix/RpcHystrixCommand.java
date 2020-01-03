@@ -44,17 +44,25 @@ public class RpcHystrixCommand extends HystrixCommand {
                 .andCommandPropertiesDefaults(
                         HystrixCommandProperties.Setter()
                                 .withCircuitBreakerEnabled(true)
+                    
                                 .withCircuitBreakerRequestVolumeThreshold(10)
                                 .withCircuitBreakerErrorThresholdPercentage(context.getErrorThresholdPercentage())
+                    
                                 .withCircuitBreakerSleepWindowInMilliseconds(5 * 1000)
+                    
                                 .withMetricsRollingStatisticalWindowInMilliseconds(10 * 1000)
+                    
                                 .withExecutionTimeoutEnabled(false)
+                    
                                 .withExecutionIsolationStrategy(HystrixCommandProperties.ExecutionIsolationStrategy.SEMAPHORE)
-                                .withExecutionIsolationSemaphoreMaxConcurrentRequests(100)
+                              
+                    .withExecutionIsolationSemaphoreMaxConcurrentRequests(100)
+                    
                 )
         );
         this.obj = obj;
         this.method = method;
+        
         this.params = params;
 
         this.invoker = invoker;
