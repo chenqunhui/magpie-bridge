@@ -11,17 +11,22 @@ public class HystrixContext {
     private Object fallbackObject;
    
 	/**
-     * 错误熔断的百分比，取之范围0～100
+     * 错误熔断的百分比
+     
+     ，取之范围0～100
      */
     private int errorThresholdPercentage = 50;
     
     
     public HystrixContext(Object fallbackObject,int errorThresholdPercentage){
+	    
     	this.fallbackObject = fallbackObject;
+	    
     	this.errorThresholdPercentage = errorThresholdPercentage;
     }
     
 	public HystrixContext(Object fallbackObject){
+		
 	    this.fallbackObject = fallbackObject;
 	}
 	
