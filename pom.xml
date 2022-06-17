@@ -18,7 +18,7 @@
         <httpclient.version>4.5.3</httpclient.version>
         <hessian.lite.version>3.2.1-fixed-2</hessian.lite.version>
         <xstream.version>1.4.1</xstream.version>
-        <fastjson.version>1.2.31</fastjson.version>
+        <fastjson.version>1.2.83</fastjson.version>
         <bsf.version>3.1</bsf.version>
         <sorcerer.version>0.8</sorcerer.version>
         <zookeeper.version>3.4.9</zookeeper.version>
